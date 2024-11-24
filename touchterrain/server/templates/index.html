@@ -280,6 +280,11 @@
 										<label class="custom-file-label" id="kml_file_name" for="kml_file">Optional Polygon KML file:</label>
 								</div>
                                 <br>
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" id="gpx_file" name="gpx_file">
+                                    <label class="custom-file-label" id="gpx_file_name" for="gpx_file">Optional GPX file:</label>
+                                </div>
+                                <br>
                                 <div class="form-inline">
                                     <div class="form-group " >
                                         <input type="text" class="form-control form-control-sm" id="scale" name="scale" maxlength="12" size="3" value="1.00"
@@ -540,6 +545,7 @@
 						<input type="hidden" name="map_lat" id="map_lat3" value="NULL">
 						<input type="hidden" name="map_lon" id="map_lon3" value="NULL">
 						<input type="hidden" name="map_zoom" id="map_zoom3" value="NULL">
+						<input type="hidden" name="gpx_file_data" id="gpx_file_data" value="NULL">
 
 						<!-- hidden submit so it fires (instead of real submit) when Enter is hit in any text inside the form -->
 						<button type="submit" disabled style="display: none" aria-hidden="true"></button>

@@ -39,6 +39,7 @@ app = Flask(__name__)
 # import modules from common
 from touchterrain.common import TouchTerrainEarthEngine # will also init EE
 from touchterrain.common.Coordinate_system_conv import * # arc to meters conversion
+from touchterrain.common.TouchTerrainGPX import addGPXToModel # import addGPXToModel function
 
 import logging
 import time
@@ -567,6 +568,16 @@ def export():
 
         # set geojson_polygon as polygon arg (None by default)
         args["polygon"] = geojson_polygon
+
+        # handle GPX file upload
+        importedGPX = None
+        if 'gpx_file' in request.files:
+            gpx_file = request.files['gpx_file']
+            if gpx_file.filename != '':
+                gpx_file_path = os.path.join(TMP_FOLDER, gpx_file.filename)
+                gpx_file.save(gpx_file_path)
+                importedGPX = [gpx_file_path]
+                args["importedGPX"] = importedGPX
 
         # show snazzy animated gif - set to style="display: none to hide once processing is done
         html = '<img src="static/processing.gif" id="gif" alt="processing animation" style="display: block;">\n'
