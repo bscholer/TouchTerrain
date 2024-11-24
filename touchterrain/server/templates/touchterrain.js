@@ -1,5 +1,3 @@
-// touchterrain JS
-
 "use strict";  // http://javascript.info/strict-mode
 
 
@@ -10,7 +8,7 @@ let eemap = -1    // Google Earth Engine map
 let div_lines_x = []; // internal division lines for tile boundaries
 let div_lines_y = [];
 let polygon = -1  // optional masking polygon
-
+let gpxPaths = []; // array to store multiple GPX paths
 
 /**
 * This page will be called from a Python script that uses
@@ -48,7 +46,6 @@ let transp = "{{ transp }}";
 let gamma = "{{ gamma }}";
 let hsazi = "{{ hsazi }}";
 let hselev = "{{ hselev }}";
-
 
 // run this once the browser is ready
 window.onload = function () {
@@ -299,6 +296,37 @@ window.onload = function () {
             polygon.setMap(null); // remove any earlier polygon
         }
       } // if (fileInput.files.length)
+    });
+
+    // add change callback for gpx_file button
+    let gpxFileInput = document.getElementById('gpx_file');
+    gpxFileInput.addEventListener('change', function(e) {
+        if (gpxFileInput.files.length) {
+            let file = gpxFileInput.files[0];
+            let reader = new FileReader();
+            reader.onload = function(e) {
+                const gpxData = e.target.result;
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(gpxData, "application/xml");
+                const coordinates = [];
+                const trkpts = xmlDoc.getElementsByTagName("trkpt");
+                for (let i = 0; i < trkpts.length; i++) {
+                    const lat = parseFloat(trkpts[i].getAttribute("lat"));
+                    const lon = parseFloat(trkpts[i].getAttribute("lon"));
+                    coordinates.push({ lat: lat, lng: lon });
+                }
+                const gpxPath = new google.maps.Polyline({
+                    path: coordinates,
+                    geodesic: true,
+                    strokeColor: "#FF0000",
+                    strokeOpacity: 1.0,
+                    strokeWeight: 2,
+                });
+                gpxPath.setMap(map);
+                gpxPaths.push(gpxPath); // add the new path to the array
+            };
+            reader.readAsText(file);
+        }
     });
 
     // Place Search
